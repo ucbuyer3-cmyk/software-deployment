@@ -35,22 +35,22 @@ const server = http.createServer(async (req, res) => {
 
 function renderForm(res, errors = [], values = {}) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
-    let errorHtml = errors.length > 0 ? <div class="error-box"><ul>${errors.map(e => `<li>${e}</li>`).join('')}</ul></div> : '';
-    res.end(`
-        <link rel="stylesheet" href="/style.css">
-        ${errorHtml}
-        <div class="card">
-            <h2>Personal Data Form</h2>
-            <form action="/submit" method="POST" novalidate>
-                <input type="text" name="first_name" placeholder="First Name" value="${values.first_name || ''}">
-                <input type="text" name="last_name" placeholder="Last Name" value="${values.last_name || ''}">
-                <input type="text" name="phone" placeholder="Phone (8 digits)" value="${values.phone || ''}">
-                <input type="text" name="address" placeholder="Address" value="${values.address || ''}">
-                <input type="text" name="age" placeholder="Age" value="${values.age || ''}">
-                <button type="submit">Submit Data</button>
-            </form>
-        </div>
-    `);
+    let errorHtml = errors.length > 0
+  ? <div class='''error-box"><ul>${errors.map(e => `<li>${e}</li>`).join('')}</ul></div>
+  : '';
+ res.end(`
+  <link rel="stylesheet" href="/style.css">
+  ${errorHtml}
+  <div class="card">
+    <h2>Personal Data Form</h2>
+    <form action="/submit" method="POST" novalidate>
+      <input type="text" name="first_name" placeholder="First Name" value="${values.first_name || ''}">
+      <input type="text" name="last_name" placeholder="Last Name" value="${values.last_name || ''}">
+      <input type="text" name="phone" placeholder="Phone (8 digits)" value="${values.phone || ''}">
+      <input type="text" name="address" placeholder="Address" value="${values.address || ''}">
+    </form>
+  </div>
+`);
 }
 
 async function handlePost(req, res) {
