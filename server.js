@@ -68,3 +68,23 @@ async function handlePost(req, res) {
         if (errors.length > 0) {
             return renderForm(res, errors, data); // "Sticky inputs" on error
         }
+
+        // Save to DB using Parameterized Query to prevent SQL Injection
+        await client.query(
+            'INSERT INTO persons (first_name, last_name, phone_number, address, age) VALUES ($1, $2, $3, $4, $5)',
+            [data.first_name, data.last_name, data.phone, data.address, data.age]
+        );
+
+        res.writeHead(303, { 'Location': '/records' }); // Post-Redirect-Get
+        res.end();
+    });
+}
+
+async function renderTable(res) {
+    const result = await client.query('SELECT * FROM persons');
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    let rows = result.rows.map(r => `<tr><td>${r.id}</td><td>${r.first_name}</td><td>${r.last_name}</td><td>${r.phone_number}</td><td>${r.address}</td><td>${r.age}</td></tr>`).join('');
+    res.end(`<link rel="stylesheet" href="/style.css"><h2>Submitted Records</h2><table><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Phone</th><th>Address</th><th>Age</th></tr>${rows}</table><br><a href="/">Add Another</a>`);
+}
+
+server.listen(process.env.PORT || 3000);
